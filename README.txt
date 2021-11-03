@@ -4,12 +4,12 @@ The server for this system runs on Ubuntu using mysql to store data. The c serve
 
 
 
-DEPENDENCIES:
+ *********** DEPENDENCIES *********** 
 
   mysql-server
   default-libmysqlclient-dev
 
-MYSQL COMMANDS TO INITIALIZE DATA STRUCTURE:
+ *********** MYSQL COMMANDS TO INITIALIZE DATA STRUCTURE *********** 
 
   CREATE DATABASE Store;
   USE Store;
@@ -24,7 +24,7 @@ MYSQL COMMANDS TO INITIALIZE DATA STRUCTURE:
     gross_profit DECIMAL(19,4) NOT NULL ,
     );
 
-MYSQL TABLES AND FIELDS:
+ *********** MYSQL TABLES AND FIELDS *********** 
   mysql> show columns from Store_Inventory;
   +----------------------+---------------+------+-----+---------+----------------+
   | Field                | Type          | Null | Key | Default | Extra          |
@@ -40,4 +40,11 @@ MYSQL TABLES AND FIELDS:
   +----------------------+---------------+------+-----+---------+----------------+
   8 rows in set (0.01 sec)
 
+ *********** COMPILING AND RUNNING C-MYSQL TEST SCRIPT ***********
+ 
+   Example output:
 
+  bigsley@localhost:/home/bigsley/data_structures_final# gcc server.c -o server  `mysql_config --cflags --libs` ; ./server
+  1254 Trident Gum 1.9900
+  12251 Granny Smith Apples 1.9900
+  12252 Honey Nut Cheerios 5.2100
