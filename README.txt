@@ -1,7 +1,6 @@
 ** C based server-client grocery billing system **
 
 
-The 
 CREATE DATABASE Store;
 USE Store;
 CREATE  TABLE Store_Inventory (
@@ -13,4 +12,16 @@ CREATE  TABLE Store_Inventory (
   );
 
 
+
+mysql> show columns from Store_Inventory;
++----------------------+---------------+------+-----+---------+----------------+
+| Field                | Type          | Null | Key | Default | Extra          |
++----------------------+---------------+------+-----+---------+----------------+
+| product_id           | int(11)       | NO   | PRI | NULL    | auto_increment |
+| product_display_name | varchar(150)  | NO   |     | NULL    |                |
+| retail_price         | int(11)       | NO   |     | NULL    |                |
+| wholesale_price      | decimal(19,4) | NO   |     | NULL    |                |
+| num_in_stock         | int(11)       | NO   |     | NULL    |                |
++----------------------+---------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
 
