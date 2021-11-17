@@ -19,9 +19,9 @@ The server for this system runs on Ubuntu using mysql to store data. The c serve
     retail_price DECIMAL(19,4) NOT NULL ,
     wholesale_price DECIMAL(19,4) NOT NULL ,
     num_in_stock INT NOT NULL,
-    num_sold INT NOT NULL
+    num_sold INT NOT NULL,
     net_profit DECIMAL(19,4) NOT NULL ,
-    gross_profit DECIMAL(19,4) NOT NULL ,
+    gross_profit DECIMAL(19,4) NOT NULL 
     );
 
  *********** MYSQL TABLES AND FIELDS *********** 
