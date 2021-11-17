@@ -6,7 +6,7 @@
 
 
 
-void insert_int(MYSQL* conn, int id, int val, char* field){
+void insert_int(MYSQL* conn, int id, int val, char* field){ // function to insert integer into the field of a row given a Product ID
 
 
     char command[512];
@@ -17,11 +17,11 @@ void insert_int(MYSQL* conn, int id, int val, char* field){
 
 }
 
-void insert_double(MYSQL* conn, int id, float val, char* field){
+void insert_double(MYSQL* conn, int id, float val, char* field){ // function to insert double into the field of a row given a Product ID
 
 
     char command[512];
-    snprintf(command,512,"UPDATE Store_Inventory SET %s = %f WHERE product_id = %d",field,val,id);
+    snprintf(command,512,"UPDATE Store_Inventory SET %s = %f WHERE product_id = %d",field,val,id); 
   //  printf("%s\n",command);
     mysql_query(conn, command);
 
@@ -29,9 +29,9 @@ void insert_double(MYSQL* conn, int id, float val, char* field){
 }
 
 
-int get_int(MYSQL* conn, int id, char* field) {
+int get_int(MYSQL* conn, int id, char* field) { // function to retrieve an integer from given product's ID field
     char command[512];
-    snprintf(command,512,"SELECT %s FROM Store_Inventory WHERE product_id = %d",field,id);
+    snprintf(command,512,"SELECT %s FROM Store_Inventory WHERE product_id = %d",field,id); //sql command to collect data
    // printf("%s\n",command);
     mysql_query(conn, command);
     MYSQL_RES *result =mysql_store_result(conn);
@@ -43,7 +43,7 @@ int get_int(MYSQL* conn, int id, char* field) {
 
 }
 
-double get_double(MYSQL* conn, int id, char* field) {
+double get_double(MYSQL* conn, int id, char* field) {// function to retrieve a double from given product's ID field
     char command[512];
     snprintf(command,512,"SELECT %s FROM Store_Inventory WHERE product_id = %d",field,id);
     //printf("%s\n",command);
@@ -57,35 +57,35 @@ double get_double(MYSQL* conn, int id, char* field) {
 
 }
 
-
-int findItem(MYSQL  *conn, int id) {
+ 
+int findItem(MYSQL  *conn, int id) { // function to return all fields given a product ID  (returns an integer so it can be used as a boolean function as well)
 
     char *row1[] = {"product_id", "product_display_name", "retail_price","wholesale_price","num_in_stock","num_sold","net_profit","gross_profit"};
     char command[512];
     snprintf(command,512,"SELECT * FROM Store_Inventory WHERE product_id = %d",id);
-   // printf("%s\n",command);
+   // printf("%s\n",command); // Used for debugging 
    mysql_query(conn, command);
    MYSQL_RES *result =mysql_store_result(conn);
    MYSQL_ROW record= mysql_fetch_row(result);
-   if (record == NULL) {
+   if (record == NULL) { // if sql query is NULL the product ID has no match 
         printf("\nItem not Found!\n");
-        return 1;
+        return 1; 
    }
    printf("\n\n************** ITEM SEARCH FOR ID #%d ************** \n\n",id);
-   printf("%-10s | %-35s | %15s | %15s | %15s | %15s | %15s | %15s\n", row1[0], row1[1], row1[2],row1[3],row1[4],row1[5],row1[6], row1[7] );
-   printf("%-10s | %-35s | %15s | %15s | %15s | %15s | %15s | %15s\n", record[0], record[1], record[2],record[3],record[4],record[5],record[6], record[7] );
+   printf("%-10s | %-35s | %15s | %15s | %15s | %15s | %15s | %15s\n", row1[0], row1[1], row1[2],row1[3],row1[4],row1[5],row1[6], row1[7] ); // print field labels
+   printf("%-10s | %-35s | %15s | %15s | %15s | %15s | %15s | %15s\n", record[0], record[1], record[2],record[3],record[4],record[5],record[6], record[7] ); //print data
 
    return 0;
 }
 
 
 
-int dumpInventory( MYSQL* conn, MYSQL_ROW record) {
+int dumpInventory( MYSQL* conn, MYSQL_ROW record) { /// print out all records for the inventory table
 
  char *row1[] = {"product_id", "product_display_name", "retail_price","wholesale_price","num_in_stock","num_sold","net_profit","gross_profit"};
 
 
- if (mysql_query(conn, "SELECT * FROM Store_Inventory")) {
+ if (mysql_query(conn, "SELECT * FROM Store_Inventory")) { // sql command to select all data
         printf("Unable to connect with MySQL server 1 \n");
         mysql_close(conn);
         return 1;
@@ -121,32 +121,38 @@ int dumpInventory( MYSQL* conn, MYSQL_ROW record) {
 
 
 
-int sellItem(MYSQL* conn, int id, int n) {
+int sellItem(MYSQL* conn, int id, int n) { //function to handle value changes given the sale of an item
 
-        int numStock = get_int(conn,id,"num_in_stock");
+        int numStock = get_int(conn,id,"num_in_stock"); //extract number of items in stock
 
-        if (n> numStock) {
+        if (n> numStock) { // if the number of items sold exceeds the inventory, the sale cannot go through
                 printf("\n **** ERROR : Cannot sell %d items, exceeds the %d in stock... **** \n",n,numStock);
                 return 1;
         }
 
 
-        numStock=numStock-n;
+        numStock=numStock-n; //decrease the stock by the amount of items sold
 
-        int numSold = get_int(conn,id,"num_sold");
+        int numSold = get_int(conn,id,"num_sold"); //grab the number of items sold and increment by the latest transcation
         numSold=numSold+n;
 
 
 
-        double retailPrice = get_double(conn,id,"retail_price");
+        double retailPrice = get_double(conn,id,"retail_price"); // grab  individial prices and profits.
+    
+                                                                    //NOTE: grossProfit and netProfit store the gross and net profit earned on a particular item
 
-        double wholesalePrice = get_double(conn,id,"wholesale_price");
+        double wholesalePrice = get_double(conn,id,"wholesale_price"); 
 
-        double grossProfit= numSold*retailPrice;
+        double grossProfit= numSold*retailPrice; // calculate gross profit
 
-        double netProfit = grossProfit - (wholesalePrice * numSold);
+    
+        double netProfit = grossProfit - (wholesalePrice * numSold); //calculate net profit
 
-        insert_int(conn,id,numSold,"num_sold");
+    
+        //insert new values into table 
+    
+        insert_int(conn,id,numSold,"num_sold"); 
         insert_int(conn,id,numStock,"num_in_stock");
 
         insert_double(conn,id,netProfit,"net_profit");
@@ -157,12 +163,12 @@ int sellItem(MYSQL* conn, int id, int n) {
 
 
 
-void getTotals(MYSQL* conn) {
+void getTotals(MYSQL* conn) { //gets the composite totals of profit and revenue from all the items 
         double profit;
         double  revenue;
         int itemsSold;
 
-        mysql_query(conn, "SELECT SUM(net_profit) FROM Store_Inventory");
+        mysql_query(conn, "SELECT SUM(net_profit) FROM Store_Inventory"); // sql command to sum profit coloums
         MYSQL_RES *result =mysql_store_result(conn);
         MYSQL_ROW row= mysql_fetch_row(result);
         profit = atof(row[0]);
@@ -184,12 +190,13 @@ void getTotals(MYSQL* conn) {
 
 int main()
 {
+    //define the domain of the mysql server and credentials needed to log in
     char server[16] = "localhost";
     char username[16] = "root";
     char password[16] = "THEbomb.com1234!";
     char database[16] = "Store";
 
-
+   // define tcp/ip connection to mysql server using API
     MYSQL* conn = mysql_init(NULL);
     MYSQL_ROW record;
 
@@ -198,14 +205,15 @@ int main()
         return 1;
     }
 
-    if (mysql_real_connect(conn, server, username, password, database, 0, NULL, 0) == NULL) {
+    if (mysql_real_connect(conn, server, username, password, database, 0, NULL, 0) == NULL) { //initialize connection
         printf("Unable to connect with MySQL server\n");
         mysql_close(conn);
         return 1;
         }
 
   printf(" *** Connected to Mysql database at  %s...  *** \n\n",server);
-        getTotals(conn);
+     
+    // ***** Menu option controller for client  ******
     int choice, id,n;
     unsigned long int fact;
 
